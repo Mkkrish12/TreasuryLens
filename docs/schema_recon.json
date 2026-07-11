@@ -1,0 +1,33 @@
+{
+  "database_name": "CRYPTO",
+  "database_uuid": "59930fbf-9f35-4e39-b41d-c8a71873b1bf",
+  "database_fqn": "crypto-70a8f494.CRYPTO",
+  "connection_slug": "crypto-70a8f494",
+  "resource_uri": "data:b732e1b7-49b1-404c-b02f-2d131dc756b9:70a8f494-bf79-477d-8999-23d5a7d6e331:crypto-70a8f494",
+  "chain_schemas": [
+    "CRYPTO_BAND",
+    "CRYPTO_BITCOIN",
+    "CRYPTO_BITCOIN_CASH",
+    "CRYPTO_DASH",
+    "CRYPTO_ETHEREUM",
+    "CRYPTO_ETHEREUM_CLASSIC",
+    "CRYPTO_ZILLIQA"
+  ],
+  "has_balance_table": true,
+  "has_usd_price_column": false,
+  "value_unit": "native_token",
+  "timestamp_column_hint": "block_timestamp",
+  "recon_complete": true,
+  "recon_notes": "Live Craft MCP recon. BALANCES on CRYPTO_ETHEREUM_CLASSIC; 7 chain schemas; native units only.",
+  "demo_wallets": [],
+  "tables": [
+    {
+      "fqn": "crypto-70a8f494.CRYPTO.CRYPTO_ETHEREUM_CLASSIC.BALANCES",
+      "schema_name": "CRYPTO_ETHEREUM_CLASSIC",
+      "table_name": "BALANCES",
+      "role": "balances",
+      "key_columns": {"address": "STRING", "eth_balance": "NUMERIC"},
+      "notes": "Confirmed balances table"
+    }
+  ]
+}

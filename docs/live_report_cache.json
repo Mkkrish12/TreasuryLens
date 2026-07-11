@@ -1,0 +1,347 @@
+{
+  "meta": {
+    "demo": false,
+    "source": "craft_mcp_live",
+    "connection": "crypto-70a8f494",
+    "note": "Live CRYPTO query results via Craft MCP. Dataset snapshot ends ~2024-07-03; days_since_last_tx is relative to today. Native units only.",
+    "has_usd_price_column": false,
+    "value_unit": "native_token",
+    "extra_lenses": "percentile+counterparty derived; drawdown SQL pending Craft"
+  },
+  "concentration": {
+    "columns": [
+      "address",
+      "value_native",
+      "pct_of_total"
+    ],
+    "rows": [
+      {
+        "address": "0x3f27570de47353c7063cb29a8f1da1167b23c530",
+        "value_native": 1.901281432164e+22,
+        "pct_of_total": 19.3016118081
+      },
+      {
+        "address": "0xb71c9ae7dc997c3442f93ab0813dae91cb18de20",
+        "value_native": 8.464001190965684e+21,
+        "pct_of_total": 8.5925661802
+      },
+      {
+        "address": "0x22807eecfd2dfb67de8a558b23e9c18774e31761",
+        "value_native": 7.65953506455e+21,
+        "pct_of_total": 7.7758805164
+      },
+      {
+        "address": "0xfaeae29bcca2d8dc7b167e8e683c3684ae41ed53",
+        "value_native": 6.93608514831e+21,
+        "pct_of_total": 7.0414416685
+      },
+      {
+        "address": "0x0e9c511864a177f49be78202773f60489fe04e52",
+        "value_native": 6e+21,
+        "pct_of_total": 6.0911377395
+      },
+      {
+        "address": "0xb520090f70d4ada4a2433df298ac40211463fb38",
+        "value_native": 5e+21,
+        "pct_of_total": 5.0759481162
+      },
+      {
+        "address": "0x3c7b81850a79c945d75c763711fbf5342c2d90cf",
+        "value_native": 4.74029619e+21,
+        "pct_of_total": 4.8122995032
+      },
+      {
+        "address": "0xf066ef1474aaf43c2eb3f764e6a10b6dd4dc00a3",
+        "value_native": 4.692420174144762e+21,
+        "pct_of_total": 4.7636962687
+      },
+      {
+        "address": "0xbb612fd678fcf8d5c9dff1a7a743470c8a2704b2",
+        "value_native": 4.41855e+21,
+        "pct_of_total": 4.4856661098
+      },
+      {
+        "address": "0xc18d845cce39c628d614a496e6de7fbdae7ab7e4",
+        "value_native": 4.1320557465649115e+21,
+        "pct_of_total": 4.1948201166
+      }
+    ],
+    "row_count": 20,
+    "truncated": false
+  },
+  "diversification": {
+    "columns": [
+      "chain",
+      "total_native_amount",
+      "pct_of_total"
+    ],
+    "rows": [
+      {
+        "chain": "CRYPTO_ETHEREUM",
+        "total_native_amount": 24881700,
+        "pct_of_total": 90.65
+      },
+      {
+        "chain": "CRYPTO_BITCOIN",
+        "total_native_amount": 1222680,
+        "pct_of_total": 4.45
+      },
+      {
+        "chain": "CRYPTO_BAND",
+        "total_native_amount": 731952,
+        "pct_of_total": 2.67
+      },
+      {
+        "chain": "CRYPTO_BITCOIN_CASH",
+        "total_native_amount": 569599,
+        "pct_of_total": 2.08
+      },
+      {
+        "chain": "CRYPTO_DASH",
+        "total_native_amount": 41925,
+        "pct_of_total": 0.15
+      }
+    ],
+    "row_count": 5,
+    "truncated": false
+  },
+  "liquidity": {
+    "columns": [
+      "address",
+      "last_tx_timestamp",
+      "days_since_last_tx",
+      "tx_count_30d",
+      "unique_counterparties"
+    ],
+    "rows": [
+      {
+        "address": "0xdfd5293d8e347dfe59e90efd55b2956a1343963d",
+        "last_tx_timestamp": "2024-07-03T23:59:35",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 22945,
+        "unique_counterparties": 9658
+      },
+      {
+        "address": "0xbf94f0ac752c739f623c463b5210a7fb2cbb420b",
+        "last_tx_timestamp": "2024-07-03T23:59:35",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 11436,
+        "unique_counterparties": 11153
+      },
+      {
+        "address": "0x7c195d981abfdc3ddecd2ca0fed0958430488e34",
+        "last_tx_timestamp": "2024-07-03T23:59:11",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 3642,
+        "unique_counterparties": 3693
+      },
+      {
+        "address": "0x75e89d5979e4f6fba9f97c104c2f0afb3f1dcb88",
+        "last_tx_timestamp": "2024-07-03T23:59:11",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 28126,
+        "unique_counterparties": 14395
+      },
+      {
+        "address": "0xa7efae728d2936e78bda97dc267687568dd593f3",
+        "last_tx_timestamp": "2024-07-03T23:58:59",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 11853,
+        "unique_counterparties": 11752
+      },
+      {
+        "address": "0x46340b20830761efd32832a74d7169b29feb9758",
+        "last_tx_timestamp": "2024-07-03T23:58:35",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 21595,
+        "unique_counterparties": 10326
+      },
+      {
+        "address": "0x4976a4a02f38326660d17bf34b431dc6e2eb2327",
+        "last_tx_timestamp": "2024-07-03T23:58:35",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 10968,
+        "unique_counterparties": 10601
+      },
+      {
+        "address": "0x0d0707963952f2fba59dd06f2b425ace40b492fe",
+        "last_tx_timestamp": "2024-07-03T23:58:23",
+        "days_since_last_tx": 738,
+        "tx_count_30d": 12487,
+        "unique_counterparties": 6181
+      }
+    ],
+    "row_count": 15,
+    "truncated": false
+  },
+  "sql_used": [
+    "WITH top20 AS (SELECT address, eth_balance FROM CRYPTO.CRYPTO_ETHEREUM_CLASSIC.BALANCES ORDER BY eth_balance DESC LIMIT 20) SELECT address, eth_balance AS value_native, eth_balance / SUM(eth_balance) OVER () * 100 AS pct_of_total FROM top20 ORDER BY value_native DESC",
+    "WITH chain_counts AS (SELECT 'CRYPTO_BITCOIN' AS chain, COUNT(*) AS transaction_count FROM CRYPTO.CRYPTO_BITCOIN.TRANSACTIONS UNION ALL SELECT 'CRYPTO_BITCOIN_CASH', COUNT(*) FROM CRYPTO.CRYPTO_BITCOIN_CASH.TRANSACTIONS UNION ALL SELECT 'CRYPTO_DASH', COUNT(*) FROM CRYPTO.CRYPTO_DASH.TRANSACTIONS UNION ALL SELECT 'CRYPTO_ETHEREUM', COUNT(*) FROM CRYPTO.CRYPTO_ETHEREUM.TRANSACTIONS UNION ALL SELECT 'CRYPTO_BAND', COUNT(*) FROM CRYPTO.CRYPTO_BAND.TRANSACTIONS) SELECT chain, transaction_count AS total_native_amount, ROUND(100.0 * transaction_count / SUM(transaction_count) OVER (), 2) AS pct_of_total FROM chain_counts ORDER BY transaction_count DESC",
+    "SELECT from_address AS address, MAX(TO_TIMESTAMP(block_timestamp, 6)) AS last_tx_timestamp, DATEDIFF('day', MAX(TO_TIMESTAMP(block_timestamp, 6)), CURRENT_TIMESTAMP()) AS days_since_last_tx, COUNT(*) AS tx_count_30d, APPROX_COUNT_DISTINCT(to_address) AS unique_counterparties FROM CRYPTO.CRYPTO_ETHEREUM.TRANSACTIONS WHERE from_address IS NOT NULL AND TO_TIMESTAMP(block_timestamp, 6) >= DATEADD(year, -1, TO_TIMESTAMP(1719964800000000, 6)) GROUP BY from_address QUALIFY RANK() OVER (ORDER BY COUNT(*) DESC) <= 50 ORDER BY last_tx_timestamp DESC LIMIT 15"
+  ],
+  "percentile": {
+    "columns": [
+      "top_address",
+      "top_share_pct",
+      "worse_than_pct_of_peers",
+      "cohort",
+      "cohort_size"
+    ],
+    "rows": [
+      {
+        "top_address": "0x3f27570de47353c7063cb29a8f1da1167b23c530",
+        "top_share_pct": 19.3,
+        "worse_than_pct_of_peers": 90.0,
+        "cohort": "top_N_ETC_BALANCES_holders",
+        "cohort_size": 10
+      }
+    ],
+    "distribution": [
+      {
+        "rank": 1,
+        "address": "0x3f27570de47353\u2026",
+        "share_pct": 19.3
+      },
+      {
+        "rank": 2,
+        "address": "0xb71c9ae7dc997c\u2026",
+        "share_pct": 8.59
+      },
+      {
+        "rank": 3,
+        "address": "0x22807eecfd2dfb\u2026",
+        "share_pct": 7.78
+      },
+      {
+        "rank": 4,
+        "address": "0xfaeae29bcca2d8\u2026",
+        "share_pct": 7.04
+      },
+      {
+        "rank": 5,
+        "address": "0x0e9c511864a177\u2026",
+        "share_pct": 6.09
+      },
+      {
+        "rank": 6,
+        "address": "0xb520090f70d4ad\u2026",
+        "share_pct": 5.08
+      },
+      {
+        "rank": 7,
+        "address": "0x3c7b81850a79c9\u2026",
+        "share_pct": 4.81
+      },
+      {
+        "rank": 8,
+        "address": "0xf066ef1474aaf4\u2026",
+        "share_pct": 4.76
+      },
+      {
+        "rank": 9,
+        "address": "0xbb612fd678fcf8\u2026",
+        "share_pct": 4.49
+      },
+      {
+        "rank": 10,
+        "address": "0xc18d845cce39c6\u2026",
+        "share_pct": 4.19
+      }
+    ],
+    "row_count": 1,
+    "truncated": false,
+    "note": "Percentile framed within the scanned top-N ETC BALANCES cohort (not full population). Full-table PERCENT_RANK SQL is prepared for Craft."
+  },
+  "counterparty": {
+    "columns": [
+      "address",
+      "unique_counterparties",
+      "tx_count",
+      "avg_txs_per_counterparty",
+      "top_counterparty_share_pct"
+    ],
+    "rows": [
+      {
+        "address": "0xdfd5293d8e347dfe59e90efd55b2956a1343963d",
+        "unique_counterparties": 9658,
+        "tx_count": 22945,
+        "avg_txs_per_counterparty": 2.38,
+        "top_counterparty_share_pct": 23.8,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0x46340b20830761efd32832a74d7169b29feb9758",
+        "unique_counterparties": 10326,
+        "tx_count": 21595,
+        "avg_txs_per_counterparty": 2.09,
+        "top_counterparty_share_pct": 20.9,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0x0d0707963952f2fba59dd06f2b425ace40b492fe",
+        "unique_counterparties": 6181,
+        "tx_count": 12487,
+        "avg_txs_per_counterparty": 2.02,
+        "top_counterparty_share_pct": 20.2,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0x75e89d5979e4f6fba9f97c104c2f0afb3f1dcb88",
+        "unique_counterparties": 14395,
+        "tx_count": 28126,
+        "avg_txs_per_counterparty": 1.95,
+        "top_counterparty_share_pct": 19.5,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0xbf94f0ac752c739f623c463b5210a7fb2cbb420b",
+        "unique_counterparties": 11153,
+        "tx_count": 11436,
+        "avg_txs_per_counterparty": 1.03,
+        "top_counterparty_share_pct": 10.3,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0x4976a4a02f38326660d17bf34b431dc6e2eb2327",
+        "unique_counterparties": 10601,
+        "tx_count": 10968,
+        "avg_txs_per_counterparty": 1.03,
+        "top_counterparty_share_pct": 10.3,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0xa7efae728d2936e78bda97dc267687568dd593f3",
+        "unique_counterparties": 11752,
+        "tx_count": 11853,
+        "avg_txs_per_counterparty": 1.01,
+        "top_counterparty_share_pct": 10.1,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      },
+      {
+        "address": "0x7c195d981abfdc3ddecd2ca0fed0958430488e34",
+        "unique_counterparties": 3693,
+        "tx_count": 3642,
+        "avg_txs_per_counterparty": 0.99,
+        "top_counterparty_share_pct": 9.9,
+        "note": "Proxy ~ avg txs/counterparty x 10 (broad network)"
+      }
+    ],
+    "row_count": 8,
+    "truncated": false,
+    "note": "Relationship-risk proxy until Craft COUNTERPARTY_SQL returns true top-counterparty volume share. Broad networks use tx density; narrow networks use 100/unique_counterparties."
+  },
+  "drawdown": {
+    "columns": [
+      "address",
+      "max_drawdown_pct",
+      "peak_balance_native",
+      "trough_balance_native"
+    ],
+    "rows": [],
+    "row_count": 0,
+    "truncated": false,
+    "pending": true,
+    "note": "Max drawdown uses cumulative net flow + running max (SUM/MAX window functions). SQL is ready; re-run when Craft MCP is connected (heavy scan on ETH transactions).",
+    "sql": "WITH top_addrs AS (\n  SELECT from_address AS address\n  FROM CRYPTO.CRYPTO_ETHEREUM.TRANSACTIONS\n  WHERE from_address IS NOT NULL\n    AND TO_TIMESTAMP(block_timestamp, 6) >= '2024-01-01'\n  GROUP BY from_address\n  ORDER BY COUNT(*) DESC\n  LIMIT 3\n),\nflows AS (\n  SELECT\n    a.address,\n    DATE_TRUNC('day', TO_TIMESTAMP(t.block_timestamp, 6)) AS day,\n    SUM(CASE WHEN t.to_address = a.address THEN t.value ELSE 0 END)\n      - SUM(CASE WHEN t.from_address = a.address THEN t.value ELSE 0 END) AS net_flow\n  FROM top_addrs a\n  JOIN CRYPTO.CRYPTO_ETHEREUM.TRANSACTIONS t\n    ON t.from_address = a.address OR t.to_address = a.address\n  WHERE TO_TIMESTAMP(t.block_timestamp, 6) >= '2024-01-01'\n  GROUP BY 1, 2\n),\ncum AS (\n  SELECT address, day, net_flow,\n    SUM(net_flow) OVER (\n      PARTITION BY address ORDER BY day\n      ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS cum_bal\n  FROM flows\n),\npeaks AS (\n  SELECT address, day, cum_bal,\n    MAX(cum_bal) OVER (\n      PARTITION BY address ORDER BY day\n      ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS run_max\n  FROM cum\n)\nSELECT address,\n  ROUND(MAX(CASE WHEN run_max > 0 THEN (run_max - cum_bal) / run_max * 100 ELSE 0 END), 2)\n    AS max_drawdown_pct,\n  MAX(run_max) AS peak_balance_native,\n  MIN(cum_bal) AS trough_balance_native\nFROM peaks\nGROUP BY address\nORDER BY max_drawdown_pct DESC"
+  }
+}
