@@ -171,7 +171,7 @@ class CraftClient:
         chart_type: str,
         title: str | None = None,
     ) -> Any:
+        # Craft schema accepts data + chart_type only (title is rejected)
         args: dict[str, Any] = {"data": data, "chart_type": chart_type}
-        if title:
-            args["title"] = title
+        _ = title  # kept for call-site compatibility
         return await self.call_tool("generate_plotly_chart", args)

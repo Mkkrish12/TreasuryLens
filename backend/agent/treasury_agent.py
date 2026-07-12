@@ -457,8 +457,13 @@ async def generate_treasury_report(
     request: ReportRequest,
     craft: CraftClient | None = None,
 ) -> ReportResponse:
-    live_cache = None if settings.craft_headless_ready else _load_live_cache()
-    use_demo = not settings.craft_headless_ready and live_cache is None
+    # Prefer an injected live Craft client even if settings re-read races on token
+    headless = settings.craft_headless_ready or craft is not None
+    # Cached live Craft results are faster/more reliable for demos; set CRAFT_FORCE_LIVE=true to re-query
+    live_cache = _load_live_cache()
+    if settings.craft_force_live and headless:
+        live_cache = None
+    use_demo = not headless and live_cache is None
     if use_demo and not settings.allow_demo_fallback:
         raise RuntimeError(
             "CRAFT headless credentials missing. Set CRAFT_ACCESS_TOKEN for live queries, "
@@ -466,7 +471,10 @@ async def generate_treasury_report(
         )
 
     if live_cache is not None:
-        logger.info("Serving live Craft MCP cache (no headless token)")
+        logger.info(
+            "Serving live Craft MCP cache%s",
+            " (set CRAFT_FORCE_LIVE=true to re-query)" if headless else " (no headless token)",
+        )
         lens_results = enrich_lens_results(
             {
                 "concentration": live_cache["concentration"],

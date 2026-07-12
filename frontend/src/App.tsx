@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   createReport,
   fetchDemoWallets,
@@ -6,7 +6,8 @@ import {
   type ReportResponse,
 } from "./api/client";
 import { RiskBadge } from "./components/RiskBadge";
-import { RiskCard } from "./components/RiskCard";
+import { LensTabs, type LensTab } from "./components/LensTabs";
+import { ChatPanel } from "./components/ChatPanel";
 import { SqlAccordion } from "./components/SqlAccordion";
 import { Summary } from "./components/Summary";
 
@@ -64,9 +65,138 @@ export default function App() {
     }
   }
 
-  const chartsByLens = Object.fromEntries(
-    (report?.charts ?? []).map((c) => [c.lens, c.plotly_json])
-  );
+  const lensTabs: LensTab[] = useMemo(() => {
+    if (!report) return [];
+    const chartsByLens = Object.fromEntries(
+      (report.charts ?? []).map((c) => [c.lens, c.plotly_json])
+    );
+    const rj = report.report_json;
+    const tabs: LensTab[] = [
+      {
+        id: "concentration",
+        label: "Concentration",
+        title: "Concentration",
+        subtitle: "How much of scanned treasury value sits in the largest wallets",
+        about:
+          "Wallet-level share of top-N native balances from the CRYPTO BALANCES table (ETC in the live scan).",
+        howToUse:
+          "If one bar dominates, split custody across wallets / policies — a single key compromise or freeze would hit a large share of holdings.",
+        finding: rj.concentration.finding,
+        riskLevel: rj.concentration.risk_level,
+        plotlyJson: chartsByLens.concentration,
+        chartKind: "bar",
+        chartCaption: "Tallest bar = largest wallet share (%) of the scanned top-N total.",
+        metric:
+          rj.concentration.top_wallet_share_pct != null
+            ? `Top wallet share: ${rj.concentration.top_wallet_share_pct}%`
+            : undefined,
+      },
+      {
+        id: "diversification",
+        label: "Diversification",
+        title: "Diversification",
+        subtitle: "How treasury activity is spread across blockchain networks",
+        about:
+          "Transaction volume share by chain schema (Bitcoin, Ethereum, etc.) from the CRYPTO dataset.",
+        howToUse:
+          "A dominant slice means operational and protocol risk is concentrated on one network — plan failover and caps for that chain.",
+        finding: rj.diversification.finding,
+        riskLevel: rj.diversification.risk_level,
+        plotlyJson: chartsByLens.diversification,
+        chartKind: "pie",
+        chartCaption: "Each slice = one chain’s share of scanned transaction volume.",
+      },
+      {
+        id: "liquidity",
+        label: "Liquidity",
+        title: "Liquidity",
+        subtitle: "How recently and actively the busiest wallets have moved funds",
+        about:
+          "Days since last outbound activity for high-volume senders. Snapshot age can inflate dormancy vs wall-clock time.",
+        howToUse:
+          "Prioritize operational review for high bars (key ceremony, multisig readiness). Treat as mobilization friction, not market liquidity.",
+        finding: rj.liquidity.finding,
+        riskLevel: rj.liquidity.risk_level,
+        plotlyJson: chartsByLens.liquidity,
+        chartKind: "bar",
+        chartCaption: "Bar height = days since last on-chain transaction (higher = more dormant).",
+        metric:
+          rj.liquidity.dormant_wallet_count != null
+            ? `Dormant wallets: ${rj.liquidity.dormant_wallet_count}`
+            : undefined,
+      },
+    ];
+
+    if (rj.percentile) {
+      tabs.push({
+        id: "percentile",
+        label: "Peer percentile",
+        title: "Peer percentile",
+        subtitle: "Where this treasury’s concentration sits vs the scanned cohort",
+        about:
+          "Relative rank of the top wallet’s share within the scanned top-N balance cohort (full-population PERCENT_RANK when Craft returns it).",
+        howToUse:
+          "Use for peer framing with CFOs: “worse than X% of observed wallets” is clearer than an absolute % alone.",
+        finding: rj.percentile.finding,
+        riskLevel: rj.percentile.risk_level,
+        plotlyJson: chartsByLens.percentile,
+        chartKind: "bar",
+        chartCaption: "Bars = each wallet’s share (%) within the scanned cohort, ranked.",
+        metric:
+          rj.percentile.worse_than_pct_of_peers != null
+            ? `Worse than ${rj.percentile.worse_than_pct_of_peers}% of peers`
+            : undefined,
+      });
+    }
+
+    if (rj.drawdown) {
+      tabs.push({
+        id: "drawdown",
+        label: "Max drawdown",
+        title: "Max drawdown",
+        subtitle: "Largest peak-to-trough decline in cumulative native balance",
+        about:
+          "Peak-to-trough drop on a cumulative net-flow path (SUM + running MAX window functions). Classic portfolio drawdown in native units.",
+        howToUse:
+          "Treat as treasury stress capacity: large drawdowns warrant outflow limits, alerts, and hot-wallet policy review.",
+        finding: rj.drawdown.finding,
+        riskLevel: rj.drawdown.risk_level,
+        plotlyJson: chartsByLens.drawdown,
+        chartKind: "bar",
+        chartCaption:
+          "Gap between running peak and trough = max drawdown (live series when Craft returns rows).",
+        metric:
+          rj.drawdown.max_drawdown_pct != null
+            ? `Max drawdown: ${rj.drawdown.max_drawdown_pct}%`
+            : "Awaiting live window query",
+      });
+    }
+
+    if (rj.counterparty) {
+      tabs.push({
+        id: "counterparty",
+        label: "Counterparty",
+        title: "Counterparty concentration",
+        subtitle: "Relationship risk — who you transact with, not just what you hold",
+        about:
+          "How concentrated flows are toward counterparties (proxy from unique CPs / density until Craft returns true top-CP volume share).",
+        howToUse:
+          "High bars mean relationship exposure: one counterparty freeze, hack, or insolvency could stall a large share of flow.",
+        finding: rj.counterparty.finding,
+        riskLevel: rj.counterparty.risk_level,
+        plotlyJson: chartsByLens.counterparty,
+        chartKind: "bar",
+        chartCaption:
+          "Higher bars = stronger relationship-concentration proxy (distinct from asset concentration).",
+        metric:
+          rj.counterparty.top_counterparty_share_pct != null
+            ? `Top relationship proxy: ${rj.counterparty.top_counterparty_share_pct}`
+            : undefined,
+      });
+    }
+
+    return tabs;
+  }, [report]);
 
   return (
     <div className="page">
@@ -137,105 +267,7 @@ export default function App() {
 
           <RiskBadge level={report.report_json.overall_risk_rating} />
 
-          <div className="lens-stack">
-            <RiskCard
-              title="Concentration"
-              subtitle="How much of scanned treasury value sits in the largest wallets"
-              about="Wallet-level share of top-N native balances from the CRYPTO BALANCES table (ETC in the live scan)."
-              howToUse="If one bar dominates, split custody across wallets / policies — a single key compromise or freeze would hit a large share of holdings."
-              finding={report.report_json.concentration.finding}
-              riskLevel={report.report_json.concentration.risk_level}
-              plotlyJson={chartsByLens.concentration}
-              chartKind="bar"
-              chartCaption="Tallest bar = largest wallet share (%) of the scanned top-N total."
-              metric={
-                report.report_json.concentration.top_wallet_share_pct != null
-                  ? `Top wallet share: ${report.report_json.concentration.top_wallet_share_pct}%`
-                  : undefined
-              }
-            />
-            <RiskCard
-              title="Diversification"
-              subtitle="How treasury activity is spread across blockchain networks"
-              about="Transaction volume share by chain schema (Bitcoin, Ethereum, etc.) from the CRYPTO dataset."
-              howToUse="A dominant slice means operational and protocol risk is concentrated on one network — plan failover and caps for that chain."
-              finding={report.report_json.diversification.finding}
-              riskLevel={report.report_json.diversification.risk_level}
-              plotlyJson={chartsByLens.diversification}
-              chartKind="pie"
-              chartCaption="Each slice = one chain’s share of scanned transaction volume."
-            />
-            <RiskCard
-              title="Liquidity"
-              subtitle="How recently and actively the busiest wallets have moved funds"
-              about="Days since last outbound activity for high-volume senders. Snapshot age can inflate dormancy vs wall-clock time."
-              howToUse="Prioritize operational review for high bars (key ceremony, multisig readiness). Treat as mobilization friction, not market liquidity."
-              finding={report.report_json.liquidity.finding}
-              riskLevel={report.report_json.liquidity.risk_level}
-              plotlyJson={chartsByLens.liquidity}
-              chartKind="bar"
-              chartCaption="Bar height = days since last on-chain transaction (higher = more dormant)."
-              metric={
-                report.report_json.liquidity.dormant_wallet_count != null
-                  ? `Dormant wallets: ${report.report_json.liquidity.dormant_wallet_count}`
-                  : undefined
-              }
-            />
-            {report.report_json.percentile ? (
-              <RiskCard
-                title="Peer percentile"
-                subtitle="Where this treasury’s concentration sits vs the scanned cohort"
-                about="Relative rank of the top wallet’s share within the scanned top-N balance cohort (full-population PERCENT_RANK when Craft returns it)."
-                howToUse="Use for peer framing with CFOs: “worse than X% of observed wallets” is clearer than an absolute % alone."
-                finding={report.report_json.percentile.finding}
-                riskLevel={report.report_json.percentile.risk_level}
-                plotlyJson={chartsByLens.percentile}
-                chartKind="bar"
-                chartCaption="Bars = each wallet’s share (%) within the scanned cohort, ranked."
-                metric={
-                  report.report_json.percentile.worse_than_pct_of_peers != null
-                    ? `Worse than ${report.report_json.percentile.worse_than_pct_of_peers}% of peers`
-                    : undefined
-                }
-              />
-            ) : null}
-            {report.report_json.drawdown ? (
-              <RiskCard
-                title="Max drawdown"
-                subtitle="Largest peak-to-trough decline in cumulative native balance"
-                about="Peak-to-trough drop on a cumulative net-flow path (SUM + running MAX window functions). Classic portfolio drawdown in native units."
-                howToUse="Treat as treasury stress capacity: large drawdowns warrant outflow limits, alerts, and hot-wallet policy review."
-                finding={report.report_json.drawdown.finding}
-                riskLevel={report.report_json.drawdown.risk_level}
-                plotlyJson={chartsByLens.drawdown}
-                chartKind="bar"
-                chartCaption="Gap between running peak and trough = max drawdown (live series when Craft returns rows)."
-                metric={
-                  report.report_json.drawdown.max_drawdown_pct != null
-                    ? `Max drawdown: ${report.report_json.drawdown.max_drawdown_pct}%`
-                    : "Awaiting live window query"
-                }
-              />
-            ) : null}
-            {report.report_json.counterparty ? (
-              <RiskCard
-                title="Counterparty concentration"
-                subtitle="Relationship risk — who you transact with, not just what you hold"
-                about="How concentrated flows are toward counterparties (proxy from unique CPs / density until Craft returns true top-CP volume share)."
-                howToUse="High bars mean relationship exposure: one counterparty freeze, hack, or insolvency could stall a large share of flow."
-                finding={report.report_json.counterparty.finding}
-                riskLevel={report.report_json.counterparty.risk_level}
-                plotlyJson={chartsByLens.counterparty}
-                chartKind="bar"
-                chartCaption="Higher bars = stronger relationship-concentration proxy (distinct from asset concentration)."
-                metric={
-                  report.report_json.counterparty.top_counterparty_share_pct != null
-                    ? `Top relationship proxy: ${report.report_json.counterparty.top_counterparty_share_pct}`
-                    : undefined
-                }
-              />
-            ) : null}
-          </div>
+          <LensTabs tabs={lensTabs} />
 
           <Summary text={report.report_json.summary} />
 
@@ -251,6 +283,13 @@ export default function App() {
           <SqlAccordion queries={report.sql_used} />
         </main>
       ) : null}
+
+      <ChatPanel
+        addresses={walletText
+          .split(/[\n,]+/)
+          .map((s) => s.trim())
+          .filter(Boolean)}
+      />
 
       <footer className="footer">
         Values reported in native token units; no USD valuation unless a price column exists

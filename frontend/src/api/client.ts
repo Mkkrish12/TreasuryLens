@@ -77,7 +77,49 @@ export async function createReport(body: {
   });
   if (!res.ok) {
     const detail = await res.text();
-    throw new Error(detail || `Report failed (${res.status})`);
+    let message = detail || `Report failed (${res.status})`;
+    try {
+      const parsed = JSON.parse(detail) as { detail?: string };
+      if (parsed.detail) message = parsed.detail;
+    } catch {
+      /* plain text body */
+    }
+    throw new Error(message);
+  }
+  return res.json();
+}
+
+export interface AskResponse {
+  answer: string;
+  sql_used?: string | null;
+  rows: Record<string, unknown>[];
+  row_count: number;
+  plotly_json?: Record<string, unknown> | null;
+  chart_kind?: "bar" | "pie" | null;
+  demo_mode: boolean;
+  source: "craft_live" | "live_cache" | "demo";
+  notes?: string | null;
+}
+
+export async function askQuestion(body: {
+  question: string;
+  addresses?: string[];
+}): Promise<AskResponse> {
+  const res = await fetch("/api/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    let message = detail || `Ask failed (${res.status})`;
+    try {
+      const parsed = JSON.parse(detail) as { detail?: string };
+      if (parsed.detail) message = parsed.detail;
+    } catch {
+      /* plain text */
+    }
+    throw new Error(message);
   }
   return res.json();
 }

@@ -3,19 +3,17 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from agent.ask_agent import answer_question
 from agent.recon_loader import load_recon_if_present
 from agent.schema_context import DEMO_WALLETS, SCHEMA
 from agent.treasury_agent import generate_treasury_report
-from app.settings import get_settings
+from app.settings import reload_settings
 from craft.craft_client import CraftClient
+from models.ask import AskRequest, AskResponse
 from models.report import ReportRequest, ReportResponse
-
-load_dotenv()
-load_dotenv("../.env")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("treasurylens")
@@ -26,7 +24,7 @@ craft_client: CraftClient | None = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global craft_client
-    settings = get_settings()
+    settings = reload_settings()
     if load_recon_if_present():
         logger.info("Loaded schema recon (complete=%s)", SCHEMA.recon_complete)
     if settings.craft_headless_ready:
@@ -45,7 +43,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="TreasuryLens", version="0.1.0", lifespan=lifespan)
 
-settings = get_settings()
+settings = reload_settings()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list or ["*"],
@@ -57,12 +55,13 @@ app.add_middleware(
 
 @app.get("/api/health")
 async def health():
-    s = get_settings()
+    s = reload_settings()
     return {
         "ok": True,
         "craft_project_id_set": bool(s.craft_project_id),
         "craft_configured": s.craft_configured,
-        "craft_headless_ready": s.craft_headless_ready,
+        # Prefer live client state — settings re-read can disagree during reload races
+        "craft_headless_ready": craft_client is not None or s.craft_headless_ready,
         "nebius_configured": s.nebius_configured,
         "schema_recon_complete": SCHEMA.recon_complete,
         "demo_fallback": s.allow_demo_fallback,
@@ -103,9 +102,21 @@ async def schema_status():
 
 @app.post("/api/report", response_model=ReportResponse)
 async def create_report(request: ReportRequest) -> ReportResponse:
-    s = get_settings()
+    s = reload_settings()
     try:
         return await generate_treasury_report(s, request, craft_client)
     except Exception as exc:  # noqa: BLE001
         logger.exception("Report generation failed")
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/ask", response_model=AskResponse)
+async def ask_crypto(request: AskRequest) -> AskResponse:
+    s = reload_settings()
+    try:
+        return await answer_question(s, request, craft_client)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Ask failed")
         raise HTTPException(status_code=500, detail=str(exc)) from exc
